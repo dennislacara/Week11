@@ -9,8 +9,32 @@ class Controller:
         self._model = model
 
     def handleAnalizzaOggetti(self, e):
-        pass
+        self._model.crea_grafo()
+        if not self._model.G:
+            print('grafo non creato')
 
     def handleCompConnessa(self,e):
-        pass
+        if not self._model.G:
+            print('grafo non creato')
+            return
+        valore_txt = self._view._txtIdOggetto.value
+        if not valore_txt or not valore_txt.isdigit():
+            print('Inserire id valido')
+            return
+
+        valore_convertito = int(valore_txt)
+        if valore_convertito in self._model.G.nodes():
+            print('ID ESISTENTE')
+        else:
+            print('ID NON ESISTENTE')
+            return
+
+        #gestione view
+        nodi_comp_conn = self._model.calcola_componente_conn(valore_convertito)
+        self._view.txt_result.controls.clear()
+        self._view.txt_result.controls.append(ft.Text("Ecco i nodi appartenenti alla componente connessa dell'ID inserito:"))
+        for tupla in nodi_comp_conn:
+            self._view.txt_result.controls.append(ft.Text(f'{tupla[0]}  ---> PESO: {tupla[1]}'))
+
+        self._view.update_page()
 
